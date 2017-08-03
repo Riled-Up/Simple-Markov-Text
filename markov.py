@@ -76,7 +76,3 @@ def gen_markov_chain(amount_of_sentences):
                     break
         count += 1
     return output_text
-
-
-read_text(open("input.txt").read())
-print gen_markov_chain(7)
