@@ -46,7 +46,7 @@ def read_text(text):
         curr_char += 1
 
 
-def pick_from_dict(dictionary):
+def _pick_from_dict(dictionary):
     sum_of_ints = 0
     for key in dictionary:
         if type(dictionary[key]) is int:
@@ -66,12 +66,12 @@ def gen_markov_chain(amount_of_sentences):
     output_text = ""
     while count != amount_of_sentences:
         while '.' in last_word_placed:
-            last_word_placed = pick_from_dict(word_frequency)
+            last_word_placed = _pick_from_dict(word_frequency)
         output_text += last_word_placed.capitalize() + ' '
         while '.' not in last_word_placed:
             for curr_dict in list_of_dicts:
                 if curr_dict["Preceding Word"] == last_word_placed:
-                    last_word_placed = pick_from_dict(curr_dict)
+                    last_word_placed = _pick_from_dict(curr_dict)
                     output_text += last_word_placed + ' '
                     break
         count += 1
