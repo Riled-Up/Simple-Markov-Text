@@ -16,9 +16,9 @@ def read_text(text):
     curr_char = 0
     index = 0
     while curr_char != len(text):
-        if text[curr_char] != ' ' or text[curr_char] != '\t':
+        if text[curr_char].isalnum() or (ord(text[curr_char]) > 32 and ord(text[curr_char]) < 48):
             start_of_word = curr_char
-            while text[curr_char] != ' ' or text[curr_char] != '\t':
+            while text[curr_char].isalnum() or (ord(text[curr_char]) > 32 and ord(text[curr_char]) < 48):
                 curr_char += 1
             if prev_word != "":
                 while index != len(list_of_dicts):
