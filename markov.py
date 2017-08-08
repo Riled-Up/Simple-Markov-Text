@@ -16,9 +16,9 @@ def read_text(text):
     curr_char = 0
     index = 0
     while curr_char != len(text):
-        if text[curr_char].isalnum() or (ord(text[curr_char]) > 32 and ord(text[curr_char]) < 48):
+        if text[curr_char] != ' ' or text[curr_char] != '\t':
             start_of_word = curr_char
-            while text[curr_char].isalnum() or (ord(text[curr_char]) > 32 and ord(text[curr_char]) < 48):
+            while text[curr_char] != ' ' or text[curr_char] != '\t':
                 curr_char += 1
             if prev_word != "":
                 while index != len(list_of_dicts):
@@ -76,3 +76,5 @@ def gen_markov_chain(amount_of_sentences):
                     break
         count += 1
     return output_text
+
+
