@@ -5,15 +5,10 @@ from random import randint
 
 def read_text(text):
     list_of_words = text.split()
-    word_frequency = {}
     list_of_dicts = []
     preceding_word = ''
     should_add = True
     for word in list_of_words:
-        if word_frequency.has_key(word):
-            word_frequency[word] += 1
-        else:
-            word_frequency[word] = 1
         for curr_dict in list_of_dicts:
             if curr_dict['Preceding Word'] == preceding_word:
                 should_add = False
@@ -25,9 +20,12 @@ def read_text(text):
                     curr_dict[word] += 1
                 else:
                     curr_dict[word] = 1
+        for char in word:
+            if char == '.' or char == '?' or char == '!':
+                word = ''
         preceding_word = word
         should_add = True
-    return word_frequency, list_of_dicts
+    return list_of_dicts
 
 
 def _pick_from_dict(dictionary):

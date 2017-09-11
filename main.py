@@ -6,11 +6,11 @@ import pickle
 
 
 def save_obj(obj, name ):
-    with open('archives/default/'+ name + '.pkl', 'wb') as f:
+    with open('archives/'+ name + '.pkl', 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
 def load_obj(name):
-    with open('archives/default/' + name + '.pkl', 'rb') as f:
+    with open('archives/' + name + '.pkl', 'rb') as f:
         return pickle.load(f)
 
 
@@ -64,9 +64,8 @@ class MarkovChainWindow:
         self.input_text.pack(fill = "both", expand = True)
     
     def add_text_to_archive(self):
-        new_word_frequency, new_list_of_dicts = markov.read_text(self.input_text.get(1.0, "end-1c"))
-        old_word_frequency = load_obj("word_frequency")
-        old_list_of_dicts = load_obj("list_of_dicts")
+        new_list_of_dicts = markov.read_text(self.input_text.get(1.0, "end-1c"))
+        old_list_of_dicts = load_obj("default")
         for curr_new_dict in new_list_of_dicts:
             for curr_old_dict in old_list_of_dicts:
                 if curr_old_dict['Preceding Word:'] == curr_new_dict['Preceding Word:']:
@@ -75,13 +74,7 @@ class MarkovChainWindow:
                             curr_new_dict[old_word] += curr_old_dict[old_word]
                         else:
                             curr_new_dict[old_word] = curr_old_dict[old_word]
-        for old_word in old_word_frequency:
-            if new_word_frequency.has_key(old_word):
-                new_word_frequency[old_word] += old_word_frequency[old_word]
-            else:
-                new_word_frequency[old_word] = old_word_frequency[old_word]
-        save_obj(new_word_frequency, "word_frequency")
-        save_obj(new_list_of_dicts, "list_of_dicts")
+        save_obj(new_list_of_dicts, "default")
 
 
 if __name__ == "__main__":
