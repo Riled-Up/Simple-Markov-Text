@@ -2,6 +2,16 @@
 
 import markov
 import Tkinter as tk
+import pickle
+
+
+def save_obj(obj, name ):
+    with open('obj/'+ name + '.pkl', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+def load_obj(name):
+    with open('obj/' + name + '.pkl', 'rb') as f:
+        return pickle.load(f)
 
 
 class MarkovChainWindow:
@@ -31,7 +41,7 @@ class MarkovChainWindow:
         self.button_new_archive = tk.Button(self.button_horizontal_frame, text = "New", command = 0)
         self.button_delete_archive = tk.Button(self.button_horizontal_frame, text = "Delete", command = 0)
         self.button_generate_output = tk.Button(self.archive_frame, text = "Generate Text from Archive", command = 0)
-        self.button_add_to_archive = tk.Button(self.archive_frame, text = "Add Text to Archive", command = 0)
+        self.button_add_to_archive = tk.Button(self.archive_frame, text = "Add Text to Archive", command = self.add_text_to_archive())
         # Packs widgets.
         self.top_frame.pack(fill = 'x')
         self.output_text_frame.pack(fill = "both", expand = True)
@@ -52,9 +62,28 @@ class MarkovChainWindow:
         self.input_text_frame.pack(side = "left", fill = "both", expand = True)
         self.input_text_label.pack()
         self.input_text.pack(fill = "both", expand = True)
-
+    
+    def add_text_to_archive():
+        new_list_of_dicts, new_word_frequency = markov.read_text(input_text.get(0))
+        old_list_of_dicts = load_obj(list_of_dicts)
+        old_word_frequency = load_obj(word_frequency)
+        for curr_new_dict in new_list_of_dicts:
+            for curr_old_dict in old_list_of_dicts:
+                if curr_old_dict['Preceding Word:'] == curr_new_dict['Preceding Word:']:
+                    for old_word in curr_old_dict:
+                        if curr_new_dict.has_key(old_word) and old_word != 'Preceding':
+                            curr_new_dict[old_word] += curr_old_dict[old_word]
+                        else:
+                            curr_new_dict[old_word] = curr_old_dict[old_word]
+        for old_word in old_word_frequency:
+            if new_word_frequency.has_key(old_word):
+                new_word_frequency[old_word] += old_word_frequency[old_word]
+            else:
+                new_word_frequency[old_word] = old_word_frequency[old_word]
+        save_obj(new_list_of_dicts, list_of_dicts)
+        save_obj(new_word_frequency, word_frequency)
 
 if __name__ == "__main__":
     root = tk.Tk()
-    MarkovChainWindow(root)
+    window = MarkovChainWindow(root)
     root.mainloop()
