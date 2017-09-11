@@ -63,10 +63,10 @@ class MarkovChainWindow:
         self.input_text_label.pack()
         self.input_text.pack(fill = "both", expand = True)
     
-    def add_text_to_archive():
-        new_list_of_dicts, new_word_frequency = markov.read_text(input_text.get(0))
-        old_list_of_dicts = load_obj(list_of_dicts)
+    def add_text_to_archive(self):
+        new_word_frequency, new_list_of_dicts = markov.read_text(self.input_text.get(1.0, "end-1c"))
         old_word_frequency = load_obj(word_frequency)
+        old_list_of_dicts = load_obj(list_of_dicts)
         for curr_new_dict in new_list_of_dicts:
             for curr_old_dict in old_list_of_dicts:
                 if curr_old_dict['Preceding Word:'] == curr_new_dict['Preceding Word:']:
@@ -80,8 +80,9 @@ class MarkovChainWindow:
                 new_word_frequency[old_word] += old_word_frequency[old_word]
             else:
                 new_word_frequency[old_word] = old_word_frequency[old_word]
-        save_obj(new_list_of_dicts, list_of_dicts)
-        save_obj(new_word_frequency, word_frequency)
+        save_obj(new_word_frequency, "word_frequency")
+        save_obj(new_list_of_dicts, "list_of_dicts")
+
 
 if __name__ == "__main__":
     root = tk.Tk()
