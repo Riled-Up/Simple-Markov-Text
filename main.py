@@ -17,11 +17,7 @@ class MarkovChainWindow:
         self.input_text_label = tk.Label(self.input_text_frame, text = "Input Text:")
         self.input_text = tk.Text(self.input_text_frame, bd = 2, relief = "ridge", height = 19)
         self.archive_frame = tk.Frame(self.top_frame)
-        self.archive_current_frame = tk.Frame(self.archive_frame)
-        self.archive_current_label = tk.Label(self.archive_current_frame, text = "Current Archive:")
-        self.archive_current_string = tk.StringVar()
-        self.archive_current_string.set("Placeholder")
-        self.archive_current = tk.Entry(self.archive_current_frame, textvariable = self.archive_current_string)
+        self.archive_current_label = tk.Label(self.archive_frame, text = "Archives:")
         self.archive_list_frame = tk.Frame(self.archive_frame)
         self.archive_list_scrollbar = tk.Scrollbar(self.archive_list_frame)
         self.archive_list = tk.Listbox(self.archive_list_frame, yscrollcommand = self.archive_list_scrollbar.set)
@@ -39,12 +35,10 @@ class MarkovChainWindow:
         self.output_text_label.pack()
         self.output_text.pack(fill = "both", expand = True)
         self.archive_frame.pack(side = "right")
-        self.archive_current_frame.pack()
         self.archive_current_label.pack()
-        self.archive_current.pack(fill = 'x')
-        self.archive_list_frame.pack()
+        self.archive_list_frame.pack(fill = 'both', expand = True)
         self.archive_list_scrollbar.pack(side = "right", fill = 'y')
-        self.archive_list.pack(side = "left")
+        self.archive_list.pack(side = "left", fill = 'both', expand = True)
         self.button_horizontal_frame.pack(fill = 'x')
         self.button_new_archive.pack(side = "left", fill = 'x', expand = True)
         self.button_delete_archive.pack(side = "right", fill = 'x', expand = True)
@@ -65,7 +59,6 @@ class MarkovChainWindow:
     def add_text_to_archive(self):
         new_list_of_dicts = markov.read_text(self.input_text.get(1.0, "end-1c"))
         old_list_of_dicts = self.load_obj("default")
-        print new_list_of_dicts
         should_add = True
         for curr_old_dict in old_list_of_dicts:
             for curr_new_dict in new_list_of_dicts:
@@ -80,7 +73,6 @@ class MarkovChainWindow:
                 new_list_of_dicts.append(curr_old_dict)
             should_add = True
         self.save_obj(new_list_of_dicts, "default")
-        print new_list_of_dicts
 
 
 if __name__ == "__main__":
