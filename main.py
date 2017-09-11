@@ -65,15 +65,22 @@ class MarkovChainWindow:
     def add_text_to_archive(self):
         new_list_of_dicts = markov.read_text(self.input_text.get(1.0, "end-1c"))
         old_list_of_dicts = self.load_obj("default")
-        for curr_new_dict in new_list_of_dicts:
-            for curr_old_dict in old_list_of_dicts:
-                if curr_old_dict['Preceding Word:'] == curr_new_dict['Preceding Word:']:
+        print new_list_of_dicts
+        should_add = True
+        for curr_old_dict in old_list_of_dicts:
+            for curr_new_dict in new_list_of_dicts:
+                if curr_old_dict['Preceding Word'] == curr_new_dict['Preceding Word']:
+                    should_add = False
                     for old_word in curr_old_dict:
-                        if curr_new_dict.has_key(old_word) and old_word != 'Preceding':
+                        if curr_new_dict.has_key(old_word) and old_word != 'Preceding Word':
                             curr_new_dict[old_word] += curr_old_dict[old_word]
                         else:
                             curr_new_dict[old_word] = curr_old_dict[old_word]
+            if should_add:
+                new_list_of_dicts.append(curr_old_dict)
+            should_add = True
         self.save_obj(new_list_of_dicts, "default")
+        print new_list_of_dicts
 
 
 if __name__ == "__main__":
