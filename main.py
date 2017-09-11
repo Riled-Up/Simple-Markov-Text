@@ -3,7 +3,7 @@
 import markov
 import Tkinter as tk
 import pickle
-
+import os
 
 class MarkovChainWindow:
     def __init__(self, root):
@@ -26,8 +26,8 @@ class MarkovChainWindow:
         self.archive_list_scrollbar = tk.Scrollbar(self.archive_list_frame)
         self.archive_list = tk.Listbox(self.archive_list_frame, yscrollcommand = self.archive_list_scrollbar.set)
         self.archive_list_scrollbar.config(command = self.archive_list.yview)
-        for line in range(100):
-            self.archive_list.insert("end", "This is line number " + str(line))
+        for archive in os.listdir('archives/'):
+            self.archive_list.insert("end", archive[:-4])
         self.button_horizontal_frame = tk.Frame(self.archive_frame)
         self.button_new_archive = tk.Button(self.button_horizontal_frame, text = "New", command = 0)
         self.button_delete_archive = tk.Button(self.button_horizontal_frame, text = "Delete", command = 0)
