@@ -5,15 +5,6 @@ import Tkinter as tk
 import pickle
 
 
-def save_obj(obj, name ):
-    with open('archives/'+ name + '.pkl', 'wb') as f:
-        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
-
-def load_obj(name):
-    with open('archives/' + name + '.pkl', 'rb') as f:
-        return pickle.load(f)
-
-
 class MarkovChainWindow:
     def __init__(self, root):
         root.title("Markov Chain")
@@ -63,9 +54,17 @@ class MarkovChainWindow:
         self.input_text_label.pack()
         self.input_text.pack(fill = "both", expand = True)
     
+    def save_obj(self, obj, name):
+        with open('archives/'+ name + '.pkl', 'wb') as f:
+            pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+    
+    def load_obj(self, name):
+        with open('archives/' + name + '.pkl', 'rb') as f:
+            return pickle.load(f)
+    
     def add_text_to_archive(self):
         new_list_of_dicts = markov.read_text(self.input_text.get(1.0, "end-1c"))
-        old_list_of_dicts = load_obj("default")
+        old_list_of_dicts = self.load_obj("default")
         for curr_new_dict in new_list_of_dicts:
             for curr_old_dict in old_list_of_dicts:
                 if curr_old_dict['Preceding Word:'] == curr_new_dict['Preceding Word:']:
@@ -74,7 +73,7 @@ class MarkovChainWindow:
                             curr_new_dict[old_word] += curr_old_dict[old_word]
                         else:
                             curr_new_dict[old_word] = curr_old_dict[old_word]
-        save_obj(new_list_of_dicts, "default")
+        self.save_obj(new_list_of_dicts, "default")
 
 
 if __name__ == "__main__":
