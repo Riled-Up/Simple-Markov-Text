@@ -28,7 +28,7 @@ class MarkovChainWindow:
         self.button_new_archive = tk.Button(self.button_horizontal_frame, text = "New", command = 0)
         self.button_delete_archive = tk.Button(self.button_horizontal_frame, text = "Delete", command = 0)
         self.button_generate_output = tk.Button(self.archive_frame, text = "Generate Text from Archive", command = 0)
-        self.button_add_to_archive = tk.Button(self.archive_frame, text = "Add Text to Archive", command = self.add_text_to_archive())
+        self.button_add_to_archive = tk.Button(self.archive_frame, text = "Add Text to Archive", command = self.add_text_to_archive)
         # Packs widgets.
         self.top_frame.pack(fill = 'x')
         self.output_text_frame.pack(fill = "both", expand = True)
@@ -73,6 +73,7 @@ class MarkovChainWindow:
                 new_list_of_dicts.append(curr_old_dict)
             should_add = True
         self.save_obj(new_list_of_dicts, "default")
+        self.input_text.delete('1.0', 'end')
 
 
 if __name__ == "__main__":
