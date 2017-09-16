@@ -19,12 +19,12 @@ class MarkovChainWindow:
         self.archive_frame = tk.Frame(self.top_frame)
         self.archive_current_frame = tk.Frame(self.archive_frame) 
         self.archive_current_label = tk.Label(self.archive_current_frame, text = "Current Archive:") 
-        self.archive_current_string = tk.StringVar() 
-        self.archive_current_string.set("Placeholder") 
-        self.archive_current = tk.Entry(self.archive_current_frame, textvariable = self.archive_current_string) 
+        self.archive_current = tk.Entry(self.archive_current_frame)
+        #self.archive_current.bind("<Key", self.
         self.archive_list_frame = tk.Frame(self.archive_frame)
         self.archive_list_scrollbar = tk.Scrollbar(self.archive_list_frame)
         self.archive_list = tk.Listbox(self.archive_list_frame, yscrollcommand = self.archive_list_scrollbar.set)
+        self.archive_list.bind("<Double-Button-1>", self.archive_list_clicked)
         self.archive_list_scrollbar.config(command = self.archive_list.yview)
         self.update_archive_list()
         self.button_horizontal_frame = tk.Frame(self.archive_frame)
@@ -61,10 +61,18 @@ class MarkovChainWindow:
         with open('archives/' + name + '.pkl', 'rb') as f:
             return pickle.load(f)
     
+    def archive_list_clicked(self, event):
+        widget = event.widget
+        selection = widget.curselection()
+        value = widget.get(selection[0])
+        self.archive_current.delete(0, 'end')
+        self.archive_current.insert(0, value)
+    
     def update_archive_list(self):
+        self.archive_list.delete(0, 'end')
         for archive in os.listdir('archives/'):
             if archive[-4:] == '.pkl':
-                self.archive_list.insert("end", archive[:-4])
+                self.archive_list.insert('end', archive[:-4])
 
     def add_text_to_archive(self):
         new_list_of_dicts = markov.read_text(self.input_text.get(1.0, "end-1c"))
