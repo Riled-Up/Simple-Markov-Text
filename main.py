@@ -22,8 +22,7 @@ class MarkovChainWindow:
         self.archive_list_scrollbar = tk.Scrollbar(self.archive_list_frame)
         self.archive_list = tk.Listbox(self.archive_list_frame, yscrollcommand = self.archive_list_scrollbar.set)
         self.archive_list_scrollbar.config(command = self.archive_list.yview)
-        for archive in os.listdir('archives/'):
-            self.archive_list.insert("end", archive[:-4])
+        self.update_archive_list()
         self.button_horizontal_frame = tk.Frame(self.archive_frame)
         self.button_new_archive = tk.Button(self.button_horizontal_frame, text = "New", command = 0)
         self.button_delete_archive = tk.Button(self.button_horizontal_frame, text = "Delete", command = 0)
@@ -56,6 +55,11 @@ class MarkovChainWindow:
         with open('archives/' + name + '.pkl', 'rb') as f:
             return pickle.load(f)
     
+    def update_archive_list(self):
+        for archive in os.listdir('archives/'):
+            if archive[-4:] == '.pkl':
+                self.archive_list.insert("end", archive[:-4])
+
     def add_text_to_archive(self):
         new_list_of_dicts = markov.read_text(self.input_text.get(1.0, "end-1c"))
         old_list_of_dicts = self.load_obj("default")
