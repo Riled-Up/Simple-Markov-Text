@@ -2,6 +2,7 @@
 
 import markov
 import Tkinter as tk
+import tkMessageBox
 import pickle
 import os
 
@@ -20,11 +21,11 @@ class MarkovChainWindow:
         self.archive_current_frame = tk.Frame(self.archive_frame) 
         self.archive_current_label = tk.Label(self.archive_current_frame, text = "Current Archive:") 
         self.archive_current = tk.Entry(self.archive_current_frame)
-        #self.archive_current.bind("<Key", self.
+        self.archive_current.bind("<Key>", self.archive_entry_changed)
         self.archive_list_frame = tk.Frame(self.archive_frame)
         self.archive_list_scrollbar = tk.Scrollbar(self.archive_list_frame)
-        self.archive_list = tk.Listbox(self.archive_list_frame, yscrollcommand = self.archive_list_scrollbar.set)
-        self.archive_list.bind("<Double-Button-1>", self.archive_list_clicked)
+        self.archive_list = tk.Listbox(self.archive_list_frame, yscrollcommand = self.archive_list_scrollbar.set, selectmode = 'single')
+        self.archive_list.bind("<<ListboxSelect>>", self.archive_list_clicked)
         self.archive_list_scrollbar.config(command = self.archive_list.yview)
         self.update_archive_list()
         self.button_horizontal_frame = tk.Frame(self.archive_frame)
@@ -62,11 +63,18 @@ class MarkovChainWindow:
             return pickle.load(f)
     
     def archive_list_clicked(self, event):
-        widget = event.widget
-        selection = widget.curselection()
-        value = widget.get(selection[0])
-        self.archive_current.delete(0, 'end')
-        self.archive_current.insert(0, value)
+        self.archive_current.delete('anchor', 'end')
+        self.archive_current.insert('anchor', self.archive_list.get(self.archive_list.curselection()))
+    
+    def archive_entry_changed(self, event):
+        self.update_archive_list()
+        index = 0
+        for archive in self.archive_list.get(0, 'end'):
+            if archive == self.archive_current.get() + event.char:
+                self.archive_list.activate(index)
+                print self.archive_list.get('active')
+            else:
+                index += 1
     
     def update_archive_list(self):
         self.archive_list.delete(0, 'end')
@@ -75,8 +83,19 @@ class MarkovChainWindow:
                 self.archive_list.insert('end', archive[:-4])
 
     def add_text_to_archive(self):
+        self.update_archive_list()
+        if self.archive_current.get() == '':
+            tkMessageBox.showwarning("No archive selected", "Please select an archive.")
+            return 1
+        pickle_file_exists = False
+        for archive in self.archive_list.get(0, 'end'):
+            if archive == self.archive_current.get():
+                pickle_file_exists = True
+        if pickle_file_exists == False:
+            tkMessageBox.showwarning("No archive named '%s'" % self.archive_current.get(), "There is currently no archive named '%s'." % self.archive_current.get())
+            return 1
         new_list_of_dicts = markov.read_text(self.input_text.get(1.0, "end-1c"))
-        old_list_of_dicts = self.load_obj("default")
+        old_list_of_dicts = self.load_obj(self.archive_current.get())
         should_add = True
         for curr_old_dict in old_list_of_dicts:
             for curr_new_dict in new_list_of_dicts:
@@ -90,7 +109,7 @@ class MarkovChainWindow:
             if should_add:
                 new_list_of_dicts.append(curr_old_dict)
             should_add = True
-        self.save_obj(new_list_of_dicts, "default")
+        self.save_obj(new_list_of_dicts, self.archive_current.get())
         self.input_text.delete('1.0', 'end')
 
 
