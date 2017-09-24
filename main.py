@@ -63,8 +63,10 @@ class MarkovChainWindow:
             return pickle.load(f)
     
     def archive_list_clicked(self, event):
-        self.archive_current.delete('anchor', 'end')
-        self.archive_current.insert('anchor', self.archive_list.get(self.archive_list.curselection()))
+        if self.archive_list.curselection() == ():
+            return 1
+        self.archive_current.delete(0, 'end')
+        self.archive_current.insert(0, self.archive_list.get(self.archive_list.curselection()))
     
     def archive_entry_changed(self, event):
         self.update_archive_list()
@@ -72,7 +74,6 @@ class MarkovChainWindow:
         for archive in self.archive_list.get(0, 'end'):
             if archive == self.archive_current.get() + event.char:
                 self.archive_list.activate(index)
-                print self.archive_list.get('active')
             else:
                 index += 1
     
