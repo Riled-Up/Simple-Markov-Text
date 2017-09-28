@@ -31,7 +31,7 @@ class MarkovChainWindow:
         self.archive_list.activate('anchor')
         self.archive_current.insert(0, self.archive_list.get('active'))
         self.button_horizontal_frame = tk.Frame(self.archive_frame)
-        self.button_new_archive = tk.Button(self.button_horizontal_frame, text = "New", command = 0)
+        self.button_new_archive = tk.Button(self.button_horizontal_frame, text = "New", command = self.new_archive)
         self.button_delete_archive = tk.Button(self.button_horizontal_frame, text = "Delete", command = 0)
         self.button_generate_output = tk.Button(self.archive_frame, text = "Generate Text from Archive", command = 0)
         self.button_add_to_archive = tk.Button(self.archive_frame, text = "Add Text to Archive", command = self.add_text_to_archive)
@@ -84,6 +84,17 @@ class MarkovChainWindow:
         for archive in os.listdir('archives/'):
             if archive[-4:] == '.pkl':
                 self.archive_list.insert('end', archive[:-4])
+                
+    def new_archive(self):
+        self.update_archive_list()
+        for archive in os.listdir('archives/'):
+            if archive[:-4] == self.archive_current.get():
+                tkMessageBox.showwarning("Archive already exists", "The archive '%s' already exists." % archive[:-4])
+                return 1
+        self.save_obj([], self.archive_current.get())
+        self.archive_list.append('end', self.archive_current.get())
+        self.archive_list.activate('end')
+        self.archive_list_clicked(0)
 
     def add_text_to_archive(self):
         self.update_archive_list()
