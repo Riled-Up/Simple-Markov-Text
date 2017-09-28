@@ -28,6 +28,8 @@ class MarkovChainWindow:
         self.archive_list.bind("<<ListboxSelect>>", self.archive_list_clicked)
         self.archive_list_scrollbar.config(command = self.archive_list.yview)
         self.update_archive_list()
+        self.archive_list.activate('anchor')
+        self.archive_current.insert(0, self.archive_list.get('active'))
         self.button_horizontal_frame = tk.Frame(self.archive_frame)
         self.button_new_archive = tk.Button(self.button_horizontal_frame, text = "New", command = 0)
         self.button_delete_archive = tk.Button(self.button_horizontal_frame, text = "Delete", command = 0)
