@@ -2,7 +2,7 @@
 
 # IMPORTANT: If you messed around with the location of this file, make sure this variable
 # is set to the relative path of the "archives" directory.
-RELATIVE_PATH_TO_ARCHIVE_DIR = '../archives/'
+RELATIVE_PATH_TO_ARCHIVE_DIR = './archives/'
 
 import markov
 import Tkinter as tk
