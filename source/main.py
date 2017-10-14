@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+# IMPORTANT: If you messed around with the location of this file, make sure this variable
+# is set to the relative path of the "archives" directory.
+RELATIVE_PATH_TO_ARCHIVE_DIR = '../archives/'
+
 import markov
 import Tkinter as tk
 import tkMessageBox
@@ -60,12 +64,12 @@ class MarkovChainWindow:
     
     def save_obj(self, obj, name):
         """Saves .pkl objects."""
-        with open('archives/'+ name + '.pkl', 'wb') as f: # Saves it in archive directory
+        with open(RELATIVE_PATH_TO_ARCHIVE_DIR + name + '.pkl', 'wb') as f: # Saves it in archive directory
             pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
     
     def load_obj(self, name):
         """Loads .pkl objects."""
-        with open('archives/' + name + '.pkl', 'rb') as f: # Opens it in archive directory
+        with open(RELATIVE_PATH_TO_ARCHIVE_DIR + name + '.pkl', 'rb') as f: # Opens it in archive directory
             return pickle.load(f)
     
     def archive_list_clicked(self, event):
@@ -88,7 +92,7 @@ class MarkovChainWindow:
     def update_archive_list(self):
         """Updates the items in the archive_list. Useful if user puts in .pkl file in archives directory manually."""
         self.archive_list.delete(0, 'end') # Deletes all items 
-        for archive in os.listdir('archives/'): # Inserts any files with .pkl extension into archive_list.
+        for archive in os.listdir(RELATIVE_PATH_TO_ARCHIVE_DIR): # Inserts any files with .pkl extension into archive_list.
             if archive[-4:] == '.pkl':
                 self.archive_list.insert('end', archive[:-4])
                 
@@ -98,7 +102,7 @@ class MarkovChainWindow:
         if self.archive_current.get() == '': # Checks if archive_current is blank.
             tkMessageBox.showwarning("Nothing entered", "You didn't type anything in the text box.")
             return 1
-        for archive in os.listdir('archives/'):
+        for archive in os.listdir(RELATIVE_PATH_TO_ARCHIVE_DIR):
             if archive[:-4] == self.archive_current.get(): # Checks if archive already exists.
                 tkMessageBox.showwarning("Archive already exists", "The archive '%s' already exists." % archive[:-4])
                 return 1
@@ -111,10 +115,10 @@ class MarkovChainWindow:
         """Deletes archive in archives directory."""
         archive_exists = False
         # Reaffirms user decision and checks if archive exists.
-        for archive in os.listdir('archives/'):
+        for archive in os.listdir(RELATIVE_PATH_TO_ARCHIVE_DIR):
             if archive[:-4] == self.archive_current.get():
                 if tkMessageBox.askyesno("Archive deletion", "Are you sure you want to delete the '%s' archive?" % self.archive_current.get()):
-                    os.remove('archives/%s' % archive)
+                    os.remove('RELATIVE_PATH_TO_ARCHIVE_DIR%s' % archive)
                 archive_exists = True
         if archive_exists == False:
             tkMessageBox.showwarning("No archive named '%s'" % self.archive_current.get(), "There is currently no archive named '%s'." % self.archive_current.get())
