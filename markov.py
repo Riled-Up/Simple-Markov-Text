@@ -6,20 +6,20 @@ from random import randint
 def read_text(text):
     list_of_words = text.split()
     list_of_dicts = []
+    list_of_dicts.append({'Preceding Word' : ''})
     preceding_word = ''
     should_add = True
     for word in list_of_words:
-        for curr_dict in list_of_dicts:
-            if curr_dict['Preceding Word'] == preceding_word:
-                should_add = False
-        if should_add:
-            list_of_dicts.append({'Preceding Word': preceding_word})
         for curr_dict in list_of_dicts:
             if curr_dict['Preceding Word'] == preceding_word:
                 if curr_dict.has_key(word):
                     curr_dict[word] += 1
                 else:
                     curr_dict[word] = 1
+            if curr_dict['Preceding Word'] == word:
+                should_add = False
+        if should_add == True:
+            list_of_dicts.append({'Preceding Word' : word})
         for char in word:
             if char == '.' or char == '?' or char == '!':
                 word = ''
@@ -42,21 +42,19 @@ def _pick_from_dict(dictionary):
                 return key
 
 
-def gen_markov_chain(amount_of_sentences):
-    count = 0
-    last_word_placed = "."
-    output_text = ""
-    while count != amount_of_sentences:
-        while '.' in last_word_placed:
-            last_word_placed = _pick_from_dict(_word_frequency)
-        output_text += last_word_placed.capitalize() + ' '
-        while '.' not in last_word_placed:
-            for curr_dict in _list_of_dicts:
-                if curr_dict["Preceding Word"] == last_word_placed:
-                    last_word_placed = _pick_from_dict(curr_dict)
-                    output_text += last_word_placed + ' '
-                    break
-        count += 1
-    return output_text
-
-
+def generate_markov_chain(list_of_dicts):
+    output = '' 
+    words_placed = 0
+    preceding_word = ''
+    while words_placed <= 100:
+        for item in list_of_dicts:
+            if item['Preceding Word'] == preceding_word:
+                if len(item) != 1:
+                    preceding_word = _pick_from_dict(item)
+                    output += preceding_word + ' '
+                    words_placed += 1
+                else:
+                    preceding_word = ''
+        if words_placed == 0:
+            return output
+    return output

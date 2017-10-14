@@ -33,7 +33,7 @@ class MarkovChainWindow:
         self.button_horizontal_frame = tk.Frame(self.archive_frame)
         self.button_new_archive = tk.Button(self.button_horizontal_frame, text = "New", command = self.new_archive)
         self.button_delete_archive = tk.Button(self.button_horizontal_frame, text = "Delete", command = self.delete_archive)
-        self.button_generate_output = tk.Button(self.archive_frame, text = "Generate Text from Archive", command = 0)
+        self.button_generate_output = tk.Button(self.archive_frame, text = "Generate Text from Archive", command = self.generate_output)
         self.button_add_to_archive = tk.Button(self.archive_frame, text = "Add Text to Archive", command = self.add_text_to_archive)
         # Packs widgets.
         self.top_frame.pack(fill = 'x')
@@ -112,7 +112,7 @@ class MarkovChainWindow:
         self.update_archive_list()
         self.archive_current.delete(0, 'end')
         self.archive_current.insert(0, self.archive_list.get('end'))
-
+    
     
     def add_text_to_archive(self):
         self.update_archive_list()
@@ -143,6 +143,22 @@ class MarkovChainWindow:
             should_add = True
         self.save_obj(new_list_of_dicts, self.archive_current.get())
         self.input_text.delete('1.0', 'end')
+
+
+    def generate_output(self):
+        self.update_archive_list()
+        if self.archive_current.get() == '':
+            tkMessageBox.showwarning("No archive selected", "Please select an archive.")
+            return 1
+        pickle_file_exists = False
+        for archive in self.archive_list.get(0, 'end'):
+            if archive == self.archive_current.get():
+                pickle_file_exists = True
+        if pickle_file_exists == False:
+            tkMessageBox.showwarning("No archive named '%s'" % self.archive_current.get(), "There is currently no archive named '%s'." % self.archive_current.get())
+            return 1
+        self.output_text.delete('1.0', 'end')
+        self.output_text.insert('1.0', markov.generate_markov_chain(self.load_obj(self.archive_current.get())))
 
 
 if __name__ == "__main__":
